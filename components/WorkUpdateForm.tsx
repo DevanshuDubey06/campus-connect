@@ -38,20 +38,6 @@ const INITIAL_FORM: FormData = {
   remarks: '',
 };
 
-const DEPARTMENTS = [
-  'Technical Team',
-  'Design Team',
-  'Content & Media',
-  'Outreach & Marketing',
-  'Event Coordination',
-  'Research & Development',
-  'Social Media',
-  'Volunteer Management',
-  'Others',
-];
-
-const SEMESTERS = ['1st', '2nd', '3rd', '4th', '5th', '6th', '7th', '8th'];
-
 export default function WorkUpdateForm() {
   const [form, setForm] = useState<FormData>(INITIAL_FORM);
   const [errors, setErrors] = useState<FormErrors>({});
@@ -72,8 +58,8 @@ export default function WorkUpdateForm() {
 
     if (!form.collegeName.trim()) newErrors.collegeName = 'College name is required';
     if (!form.branch.trim()) newErrors.branch = 'Branch is required';
-    if (!form.semester) newErrors.semester = 'Semester is required';
-    if (!form.department) newErrors.department = 'Department / Team is required';
+    if (!form.semester.trim()) newErrors.semester = 'Semester is required';
+    if (!form.department.trim()) newErrors.department = 'Department / Team is required';
 
     if (!form.contributionDate) newErrors.contributionDate = 'Contribution date is required';
     else {
@@ -143,8 +129,8 @@ export default function WorkUpdateForm() {
       enrollmentNumber: form.enrollmentNumber.trim(),
       collegeName: form.collegeName.trim(),
       branch: form.branch.trim(),
-      semester: form.semester,
-      department: form.department,
+      semester: form.semester.trim(),
+      department: form.department.trim(),
       contributionDate: form.contributionDate,
       workTitle: form.workTitle.trim(),
       workDescription: form.workDescription.trim(),
@@ -268,37 +254,27 @@ export default function WorkUpdateForm() {
                 </FormField>
 
                 <FormField label="Current Semester" required error={errors.semester}>
-                  <select
+                  <input
+                    type="text"
                     name="semester"
                     value={form.semester}
                     onChange={handleChange}
-                    className={selectClass(errors.semester)}
+                    placeholder="e.g. 5th, 6th"
+                    className={inputClass(errors.semester)}
                     data-error={!!errors.semester}
-                  >
-                    <option value="">Select Semester</option>
-                    {SEMESTERS.map((s) => (
-                      <option key={s} value={s}>
-                        {s} Semester
-                      </option>
-                    ))}
-                  </select>
+                  />
                 </FormField>
 
                 <FormField label="Department / Team" required error={errors.department}>
-                  <select
+                  <input
+                    type="text"
                     name="department"
                     value={form.department}
                     onChange={handleChange}
-                    className={selectClass(errors.department)}
+                    placeholder="e.g. Technical Team, Design"
+                    className={inputClass(errors.department)}
                     data-error={!!errors.department}
-                  >
-                    <option value="">Select Team</option>
-                    {DEPARTMENTS.map((d) => (
-                      <option key={d} value={d}>
-                        {d}
-                      </option>
-                    ))}
-                  </select>
+                  />
                 </FormField>
               </div>
             </FieldGroup>
@@ -494,12 +470,4 @@ function inputClass(error?: string) {
       ? 'border-red-500/60 bg-red-500/5 focus:border-red-400'
       : 'border-white/10 bg-white/[0.03] focus:border-rose-500/60 focus:bg-white/[0.05]'
   }`;
-}
-
-function selectClass(error?: string) {
-  return `w-full px-3.5 py-2.5 rounded-lg text-white text-sm transition-colors border outline-none cursor-pointer ${
-    error
-      ? 'border-red-500/60 bg-red-950/30 focus:border-red-400'
-      : 'border-white/10 bg-white/[0.03] focus:border-rose-500/60'
-  } [&>option]:bg-slate-900 [&>option]:text-white`;
 }
