@@ -7,9 +7,18 @@ export async function POST(req: NextRequest) {
     const apiUrl = process.env.GOOGLE_SHEETS_API_URL;
 
     if (!apiUrl || apiUrl.includes('YOUR_SCRIPT_ID')) {
-      // Return mock success when API not configured (for local dev)
+      if (process.env.NODE_ENV === 'production') {
+        return NextResponse.json(
+          {
+            success: false,
+            error: 'GOOGLE_SHEETS_API_URL is not configured in Vercel Environment Variables.',
+          },
+          { status: 500 }
+        );
+      }
+      // Return mock success in local development when API is not configured yet
       console.warn('[Campus Connect] Google Sheets API URL not configured. Using mock response.');
-      await new Promise((r) => setTimeout(r, 800)); // simulate latency
+      await new Promise((r) => setTimeout(r, 800));
       return NextResponse.json({ success: true, mock: true });
     }
 
